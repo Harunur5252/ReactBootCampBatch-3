@@ -1,0 +1,14 @@
+.myStyles{
+    display : inline-block;
+    background-color:pink;
+    color:black;
+    margin:4px;
+}
+.even{
+  color: green;
+}
+.odd{
+    color: red;
+}
+
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to React</title>
+</head>
+<body>
+  <!-- <h1 class="msg">Hello from React</h1> -->
+  <div id="main"></div>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js" integrity="sha512-kp7YHLxuJDJcOzStgd6vtpxr4ZU9kjn77e6dBsivSz+pUuAuMlE2UTdKB7jjsWT84qbS8kdCWHPETnP/ctrFsA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script type="text/babel"> // as in this script we write javaScript with jsx syntax so, js is confused in jsx syntax.For this reason we have tell type="text/babel".
+    //  const GreetMsg = ()=>{ // each function is component in React.
+    //    return React.createElement('h1',{className:'msg'},'Hello from React') // as class is js syntax so, react is used className
+    //  }  
+
+
+    const GreetMsg = ()=>{ // each function is component in React. function name is capital latter
+       // if we write this way in react then is very complicated to handle jsx.
+      //  return React.createElement('h1',{className:'msg'},'Hello from React') 
+
+
+      
+      // so, we can easily jsx (like html syntax) in react this way. 
+      //  return(
+      //     <h1 className="msg">Hello from React</h1>
+      //  )
+
+      
+
+      // we can process (Hello from React) this message by javaScript by using { }. That means we can write in jsx pure(or dynamic) javaScript using {}.
+      /* jsx has some rules.
+           1) JSX expressions must have one parent element.
+           2) closing is mandatory.
+           3) reserved keyword(html or javaScript) must be watched out.
+           4) In { } we can only write javaScript expression. 
+           5) jsx is only for return.
+      */ 
+      const date  = new Date();
+      const year = date.getFullYear();
+      let age = 20;
+      let str = '';
+      if(age>=18){
+        str='you can vote';
+      }
+       return(
+            <div>
+                <h1 className="msg">{'Hello from React'.toUpperCase()}</h1>
+                <p>&copy; {year} | All right reserved.</p>
+                <p>{str}</p>
+            </div>
+       )
+     } 
+
+     // React dom 
+     // <greetMsg /> it's react jsx(javaScript syntax xml) syntax and we always write this way a function in react. But this jsx browser will not understand as javaScript is not this type syntax.so, in this case we solve or support to browser the jsx syntaxes by babel.
+     ReactDOM.render(<GreetMsg />,document.getElementById('main'))
+  </script>
+</body>
+</html>
