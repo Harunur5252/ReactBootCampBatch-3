@@ -1,0 +1,12 @@
+1. Class based component
+2. Compare class based component with functional component
+3. Image import(card)
+
+## we can use Image in react some way
+1. from public folder 
+example : <img src='/logo192.png'  alt='logo'/> 
+2.from src folder and in this case we have to import according to css.That's means If we want to set dynamically Image then use this format.
+example : 
+    import reactLogo from '../Images/logo512.png'
+    <img src={reactLogo}  alt='logo'/>
+
