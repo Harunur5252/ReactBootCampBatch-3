@@ -1,0 +1,19 @@
+
+# Human Lifecycle
+Birth-Baby-Children-Adult-Old-Death
+
+# React Component have Lifecycle. we can divide Lifecycle by three stage.
+1. Mounting // initially show output in browser(render).
+2. Updating // state,props,forceUpdate jsx re-render that means Updating.
+3. Unmounting // when a component is death/banish from browser that means not show in browser
+Each stage has many events.
+
+# class based component deals Lifecycle with
+  Lifecycle Methods
+
+# function based component deals Lifecycle with
+  Lifecycle Hooks
+
+  
+
+
