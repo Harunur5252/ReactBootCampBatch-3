@@ -7,7 +7,7 @@ import AppClass from './ClassBasedComponent/AppClass';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AppClass />
+    <App />
   </React.StrictMode>
 );
 
