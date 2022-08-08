@@ -7,7 +7,6 @@ export default function FormDataValidation() {
         userName:'',
         mobileNumber:'',
         validUrl:'',
-        slug:'',
         email:'',
         password:'',
         confirmPassword:'',
@@ -18,7 +17,6 @@ export default function FormDataValidation() {
         userName:'',
         mobileNumber:'',
         validUrl:'',
-        slug:'',
         email:'',
         password:'',
         confirmPassword:'',
@@ -26,7 +24,7 @@ export default function FormDataValidation() {
 
     const [submitted,setSubmitted] = useState(false)
 
-    const {fullName,userName,mobileNumber,validUrl,slug,email,password,confirmPassword} = userData
+    const {fullName,userName,mobileNumber,validUrl,email,password,confirmPassword} = userData
 
   const handleChange = (evt) => {
     setUserData({
@@ -39,58 +37,77 @@ export default function FormDataValidation() {
     })
   }
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault()
-    const userDataErrors = {
-        fullName:'',
-        userName:'',
-        mobileNumber:'',
-        validUrl:'',
-        slug:'',
-        email:'',
-        password:'',
-        confirmPassword:'',
-    }
+  const userDataErrors = {
+    fullName:'',
+    userName:'',
+    mobileNumber:'',
+    validUrl:'',
+    email:'',
+    password:'',
+    confirmPassword:'',
+}
+
+  const formErrorHandle = () => {
+
+    const fullNameRegex = /^[a-z_-]{5,15}$/gi
     if(fullName === ''){
-        userDataErrors.fullName = 'firstName is required'
+        userDataErrors.fullName = 'fullName is required'
     }
+    if(!fullNameRegex.test(fullName)){
+        userDataErrors.fullName = 'fullName is invalid'
+    }
+    const userNameRegex = /^[\w-.]{4,15}$/gi
     if(userName === ''){
         userDataErrors.userName = 'userName is required'
     }
-    const validMobileRegex = /\+?(\(?88\)?)?\d{11}/gi
+    if(!userNameRegex.test(userName)){
+        userDataErrors.userName = 'userName is invalid'
+    }
+    const validMobileRegex = /^\+?(\(?88\)?)?\d{11}$/g
     if(mobileNumber === ''){
         userDataErrors.mobileNumber = 'mobile number is required'
-    }else if(!validMobileRegex.test(mobileNumber.trim())){
+    } 
+    if(!validMobileRegex.test(mobileNumber.trim())){
         userDataErrors.mobileNumber = 'mobile number is invalid'
     }
-    const validUrlRegex = /(http(s)?)?[\S]?(:)?[\S]?(\/\/)?[\S]?(www)?[\S]?(\.)?[\S]?[\w-_]{2,20}[\S]?\.[a-z]{2,10}(\.bd)?/gi
+    const validUrlRegex = /(http(s)?)?[\S]?(:)?[\S]?(\/\/)?[\S]?(www)?[\S]?(\.)?[\S]?[\w-_]{2,20}[\S]?\.[\S]?[a-z]{2,10}(\.bd)?/gi
     if(validUrl === ''){
-        userDataErrors.validUrl = 'validUrl is required'
-    }else if(!validUrlRegex.test(validUrl.trim())){
+        userDataErrors.validUrl = 'valid url is required'
+    }
+     if(!validUrlRegex.test(validUrl.trim())){
         userDataErrors.validUrl = 'url is invalid'
     }
-    if(slug === ''){
-        userDataErrors.slug = 'slug is required'
-    }
     const validEmailRegex = /[a-z]{2,5}[\S]?([\d]{2,4})?(\.?-?_?)([a-z]{2,4})?@[\S]?[a-z]{2,5}([\d]{2,4})?(_?)([\S]?)\.[\S]?[a-z]{2,3}/gi
+    
     if(email === ''){
         userDataErrors.email = 'email is required'
-    }else if(!validEmailRegex.test(email.trim())){
+    }
+     if(!validEmailRegex.test(email.trim())){
         userDataErrors.email = 'email must be valid'
     }
+    const passwordRegex = /^[\w@#\$%\^&\*]{10}$/gi
     if(password === ''){
         userDataErrors.password = 'password is required'
     }
+    if(!passwordRegex.test(password)){
+        userDataErrors.password = 'password is invalid'
+    }
     if(confirmPassword === ''){
-        userDataErrors.confirmPassword = 'confirmPassword is required'
+        userDataErrors.confirmPassword = 'confirm password is required'
+    }
+    if(confirmPassword !== password){
+        userDataErrors.confirmPassword = 'confirm password is not matched'
     }
     setErrors(userDataErrors)
+  }
 
+  const handleSubmit = (evt) => {
+    evt.preventDefault()
+    formErrorHandle()
     if(Object.values(userDataErrors).some(elm => elm.length > 0)){
         return 
     }
     setSubmitted(true)
-
   }
 
 
@@ -120,12 +137,6 @@ export default function FormDataValidation() {
                 <Form.Label>ValidUrl</Form.Label>
                 <Form.Control type="text" name='validUrl' onChange={handleChange} value={validUrl} placeholder="ValidUrl" />
                 <span style={{color:'red'}}>{errors.validUrl}</span>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicSlug">
-                <Form.Label>Slug</Form.Label>
-                <Form.Control type="text" name='slug' onChange={handleChange} value={slug} placeholder="Slug" />
-                <span style={{color:'red'}}>{errors.slug}</span>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
