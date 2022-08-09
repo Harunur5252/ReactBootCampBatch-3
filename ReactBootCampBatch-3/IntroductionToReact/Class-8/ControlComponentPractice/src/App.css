@@ -1,7 +1,7 @@
 
 .form-heading{
   text-align: center;
-  font-weight: 400;
+  font-weight: 600;
   font-family: Arial, Helvetica, sans-serif;
   margin-top: 25px;
 }
@@ -9,3 +9,18 @@
   width: 500px;
   margin: auto;
 }
+.error-class{
+  border-color: red !important;
+}
+.success-class{
+  border-color: green !important;
+}
+.form-submit{
+  color: green;
+  text-align: center;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 260px;
+}
+
+
