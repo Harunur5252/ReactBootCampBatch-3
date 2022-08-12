@@ -100,46 +100,46 @@ function App() {
    const fullNameRegex = /^[a-z_-]{5,15}$/gi
    if(fullName === ''){
        userDataErrors.fullName = 'fullName is required'
-   }
-   if(!fullNameRegex.test(fullName)){
+   }else if(!fullNameRegex.test(fullName)){
        userDataErrors.fullName = 'fullName is invalid'
    }
+   
    const userNameRegex = /^[\w-.]{4,15}$/gi
    if(userName === ''){
        userDataErrors.userName = 'userName is required'
-   }
-   if(!userNameRegex.test(userName)){
+   }else if(!userNameRegex.test(userName)){
        userDataErrors.userName = 'userName is invalid'
    }
+   
    const validMobileRegex = /^\+?(\(?88\)?)?\d{11}$/g
    if(mobileNumber === ''){
        userDataErrors.mobileNumber = 'mobile number is required'
-   } 
-   if(!validMobileRegex.test(mobileNumber.trim())){
+   }else if(!validMobileRegex.test(mobileNumber.trim())){
        userDataErrors.mobileNumber = 'mobile number is invalid'
-   }
+   } 
+   
    const validUrlRegex = /(http(s)?)?[\S]?(:)?[\S]?(\/\/)?[\S]?(www)?[\S]?(\.)?[\S]?[\w-_]{2,20}[\S]?\.[\S]?[a-z]{2,10}(\.bd)?/gi
    if(validUrl === ''){
        userDataErrors.validUrl = 'valid url is required'
-   }
-    if(!validUrlRegex.test(validUrl.trim())){
+   }else if(!validUrlRegex.test(validUrl.trim())){
        userDataErrors.validUrl = 'url is invalid'
    }
+    
    const validEmailRegex = /[a-z]{2,5}[\S]?([\d]{2,4})?(\.?-?_?)([a-z]{2,4})?@[\S]?[a-z]{2,5}([\d]{2,4})?(_?)([\S]?)\.[\S]?[a-z]{2,3}/gi
    
    if(email === ''){
        userDataErrors.email = 'email is required'
-   }
-    if(!validEmailRegex.test(email.trim())){
+   }else if(!validEmailRegex.test(email.trim())){
        userDataErrors.email = 'email must be valid'
    }
+    
    const passwordRegex = /^[\w@#\$%\^&\*]{10}$/gi
    if(password === ''){
        userDataErrors.password = 'password is required'
-   }
-   if(!passwordRegex.test(password)){
+   }else  if(!passwordRegex.test(password)){
        userDataErrors.password = 'password is invalid'
    }
+  
    if(confirmPassword === ''){
        userDataErrors.confirmPassword = 'confirm password is required'
    }

@@ -13,31 +13,31 @@ export default function FormDataValidation({handleChange,userData,errors,handleS
             <Form className='formInput' onSubmit={handleSubmit} noValidate>
                 <Form.Group className="mb-3" controlId="formBasicFullName">
                     <Form.Label>FullName</Form.Label>
-                    <Form.Control type="text" name='fullName' className={errors.fullName ? 'error-class' : 'success-class'} onChange={handleChange} value={fullName} placeholder="FullName" />
+                    <Form.Control type="text" name='fullName' className={errors.fullName ? 'error-class' : 'success-class'} onChange={handleChange} value={fullName} placeholder="Enter Your Full Name" />
                     <span style={{color:'red'}}>{errors.fullName}</span>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicUserName">
                     <Form.Label>UserName</Form.Label>
-                    <Form.Control type="text"  name='userName' className={errors.userName ? 'error-class' : 'success-class'} onChange={handleChange} value={userName} placeholder="UserName" />
+                    <Form.Control type="text"  name='userName' className={errors.userName ? 'error-class' : 'success-class'} onChange={handleChange} value={userName} placeholder="Enter Your User Name" />
                     <span style={{color:'red'}}>{errors.userName}</span>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicMobileNumber">
                     <Form.Label>MobileNumber</Form.Label>
-                    <Form.Control type="text" name='mobileNumber' className={errors.mobileNumber ? 'error-class' : 'success-class'} onChange={handleChange} value={mobileNumber} placeholder="MobileNumber" />
+                    <Form.Control type="text" name='mobileNumber' className={errors.mobileNumber ? 'error-class' : 'success-class'} onChange={handleChange} value={mobileNumber} placeholder="Enter Your Mobile Number" />
                     <span style={{color:'red'}}>{errors.mobileNumber}</span>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicValidUrl">
                     <Form.Label>ValidUrl</Form.Label>
-                    <Form.Control type="text" name='validUrl' className={errors.validUrl ? 'error-class' : 'success-class'} onChange={handleChange} value={validUrl} placeholder="ValidUrl" />
+                    <Form.Control type="text" name='validUrl' className={errors.validUrl ? 'error-class' : 'success-class'} onChange={handleChange} value={validUrl} placeholder="Enter a Valid Url" />
                     <span style={{color:'red'}}>{errors.validUrl}</span>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>EmailAddress</Form.Label>
-                    <Form.Control type="email" name='email' className={errors.email ? 'error-class' : 'success-class'} onChange={handleChange} value={email} placeholder="Enter email" />
+                    <Form.Control type="email" name='email' className={errors.email ? 'error-class' : 'success-class'} onChange={handleChange} value={email} placeholder="Enter Your Email Address" />
                     <Form.Text className="text-muted">
                         We'll never share your email with anyone else.
                     </Form.Text><br />
@@ -46,13 +46,13 @@ export default function FormDataValidation({handleChange,userData,errors,handleS
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" name='password' className={errors.password ? 'error-class' : 'success-class'} onChange={handleChange} value={password} placeholder="Password" />
+                    <Form.Control type="password" name='password' className={errors.password ? 'error-class' : 'success-class'} onChange={handleChange} value={password} placeholder="Enter Password" />
                     <span style={{color:'red'}}>{errors.password}</span>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>ConfirmPassword</Form.Label>
-                    <Form.Control type="password" name='confirmPassword' className={errors.confirmPassword ? 'error-class' : 'success-class'} onChange={handleChange} value={confirmPassword} placeholder="ConfirmPassword" />
+                    <Form.Control type="password" name='confirmPassword' className={errors.confirmPassword ? 'error-class' : 'success-class'} onChange={handleChange} value={confirmPassword} placeholder="Enter Confirm Password" />
                     <span style={{color:'red'}}>{errors.confirmPassword}</span>
                 </Form.Group>
 

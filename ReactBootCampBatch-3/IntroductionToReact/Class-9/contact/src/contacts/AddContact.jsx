@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
+import DatePicker from "react-datepicker";
+import { useForm } from "react-hook-form";
+
 
 export default function AddContact({addContact}) {
     const [contact,setContact] = useState({
@@ -13,7 +16,7 @@ export default function AddContact({addContact}) {
         image:'',
         gender :'male'
     })
-   
+
     const handleChange = (evt) => {
        setContact({
           ...contact,
@@ -137,14 +140,17 @@ export default function AddContact({addContact}) {
                 </Col>
 
                 <Col sm={9}>
-                   <Form.Control 
-                        type='date' 
-                        name='dateOfBirth' 
-                        id='dateOfBirth' 
-                        onChange={handleChange} 
-                        value={dateOfBirth} 
-                        placeholder='Enter Your Date of Birth' 
-                   />
+                     <DatePicker 
+                           name='dateOfBirth'
+                           id='dateOfBirth'
+                           maxDate={new Date()}
+                           showYearDropdown
+                           selected={dateOfBirth} 
+                           onChange={(date) => setContact({
+                              ...contact,
+                              dateOfBirth : date
+                           })} 
+                     />
                 </Col>
             </Form.Group>
 
