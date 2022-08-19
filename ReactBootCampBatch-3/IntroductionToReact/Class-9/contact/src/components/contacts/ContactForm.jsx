@@ -1,11 +1,12 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 // validation rules for all input fields
 const schema = yup.object({
@@ -13,18 +14,71 @@ const schema = yup.object({
    lastName: yup.string().required('LastName is required').min(3,'LastName must be 3 or more').max(20,'LastName must be equal or less than 20'),
    email: yup.string().required('Email is required').email('Must be valid email'),
    bio: yup.string().required('Bio is required').min(10,'Bio must be 10 or more').max(300,'Bio must be equal or less than 300'),
-   profession: yup.string().required('Profession is required').min(3,'Profession must be 3 or more').max(20,'Profession must be equal or less than 20'),
+   profession: yup.string().required('Profession is required').oneOf(['developer','designer','marketer']),
    image: yup.string().required('Image url is required').url('Image url must be valid'),
    gender: yup.mixed().required('Gender is required').oneOf(['male','female']),
 })
 
-export default function AddContact({addContact}) {
+export default function ContactForm({addContact,contact,updateContact}) {
 
     // handling input name field , errors, submit form 
     const { register, reset, setValue, formState: { errors,isSubmitting,isSubmitSuccessful }, handleSubmit, watch } = useForm({
       resolver: yupResolver(schema)
     });
-    const onSubmit = data => {console.log(data)}
+
+
+    // setting edit value or default value in form input filed
+    const defaultValue = {
+      firstName : contact?.firstName || 'Harun',
+      lastName : contact?.lastName || 'Roshid',
+      email : contact?.email ||'hroshid695@gmal.com',
+      bio : contact?.bio ||'I am Harun',
+      profession : contact?.profession ||'developer',
+      image : contact?.image ||'https://randomuser.me/api/portraits/men/78.jpg',
+      gender : contact?.gender ||'male',
+      dateOfBirth : contact?.dateOfBirth || new Date()
+    }
+    const {firstName,lastName,email,bio,profession,image,gender,dateOfBirth} = defaultValue
+
+    // navigate to which location? 
+    const navigate = useNavigate()
+
+    // submit data and flush message
+    const onSubmit = data => {
+      const id = contact?.id
+
+       if(id){
+         // show flush message 
+         toast.success("contact is updated successfully !", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         });
+         
+         // call updateContact
+         updateContact(data,id)
+       }else {
+         // show flush message 
+         toast.success("contact is added successfully !", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         });
+         
+         // call addContact
+         addContact(data)
+       }
+       navigate('/contacts')
+    }
+
     
     // tracking date 
     const [birthYear,setBirthYear] = useState(new Date())
@@ -32,7 +86,8 @@ export default function AddContact({addContact}) {
        setValue('dateOfBirth',birthYear)
     },[birthYear])
 
-    // after form successfully submitting then reset value on input fields
+
+    // after form successfully submitting then reset value from input fields
     useEffect(() =>{
        if(isSubmitSuccessful){
          reset({
@@ -50,7 +105,7 @@ export default function AddContact({addContact}) {
 
   return (
     <>
-        <h2 className='text-center'>Add Contact</h2>
+        <h2 className='text-center'>{contact?.id ? 'Edit Contact' : 'Add Contact'}</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group as={Row} className='mb-3'>
                 <Col sm={3}>
@@ -61,7 +116,7 @@ export default function AddContact({addContact}) {
                    <Form.Control 
                         type='text'  
                         id='firstName' 
-                        defaultValue=''
+                        defaultValue={firstName}
                         {...register("firstName")} 
                         isInvalid={errors?.firstName}
                         placeholder='Enter Your First Name' 
@@ -81,7 +136,7 @@ export default function AddContact({addContact}) {
                    <Form.Control 
                         type='text'  
                         id='lastName' 
-                        defaultValue=''
+                        defaultValue={lastName}
                         {...register("lastName")} 
                         isInvalid={errors?.lastName}
                         placeholder='Enter Your Last Name' 
@@ -101,7 +156,7 @@ export default function AddContact({addContact}) {
                    <Form.Control 
                         type='email' 
                         id='email' 
-                        defaultValue=''
+                        defaultValue={email}
                         {...register("email")} 
                         isInvalid={errors?.email}
                         placeholder='Enter Your Email' 
@@ -118,14 +173,18 @@ export default function AddContact({addContact}) {
                 </Col>
 
                 <Col sm={9}>
-                   <Form.Control 
-                        type='text' 
-                        id='profession' 
-                        defaultValue=''
-                        {...register("profession")} 
-                        isInvalid={errors?.profession}
-                        placeholder='Enter Your Profession' 
-                   />
+                   <Form.Select aria-label='Enter Your Profession' 
+                   {...register("profession")} 
+                   id='profession' 
+                   isInvalid={errors?.profession}
+                   defaultValue={profession}
+                   >
+                       <option value='' disabled>Select Your Profession</option> 
+                       <option value='developer'>Developer</option>   
+                       <option value='designer'>Designer</option>
+                       <option value='marketer'>Marketer</option>  
+                   </Form.Select>
+
                      <Form.Control.Feedback type="invalid">
                         {errors?.profession?.message}
                      </Form.Control.Feedback>
@@ -141,7 +200,7 @@ export default function AddContact({addContact}) {
                    <Form.Control 
                         type='text' 
                         id='image' 
-                        defaultValue=''
+                        defaultValue={image}
                         {...register("image")} 
                         isInvalid={errors?.image}
                         placeholder='Enter Your Profile Picture' 
@@ -179,7 +238,7 @@ export default function AddContact({addContact}) {
                         as='textarea'
                         type='text' 
                         id='bio' 
-                        defaultValue=''
+                        defaultValue={bio}
                         {...register("bio")} 
                         isInvalid={errors?.bio}
                         placeholder='Enter Your Bio' 
@@ -200,6 +259,7 @@ export default function AddContact({addContact}) {
                         type='radio' 
                         id='gender' 
                         value='male'
+                        defaultChecked={gender === 'male'}
                         label='Male'
                         {...register("gender")} 
                     />
@@ -211,6 +271,7 @@ export default function AddContact({addContact}) {
                         id='gender' 
                         value='female'
                         label='Female' 
+                        defaultChecked={gender === 'female'}
                         {...register("gender")}
                     />
                 </Col>
@@ -218,7 +279,9 @@ export default function AddContact({addContact}) {
                         {errors?.gender?.message}
                      </Form.Control.Feedback>
             </Form.Group> 
-            <Button variant='primary' size='md' type='submit' disabled={isSubmitting ? 'disabled' : ''}>Add Contact</Button>
+            <Button variant='primary' size='md' type='submit' disabled={isSubmitting ? 'disabled' : ''}>
+                {contact?.id ? 'Update Contact' : 'Add Contact'}
+            </Button>
         </Form>
     </>
   )
