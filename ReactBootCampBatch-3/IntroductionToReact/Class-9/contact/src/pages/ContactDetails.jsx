@@ -1,26 +1,36 @@
-import React, { useEffect,useState } from 'react'
+import React, { useContext, useEffect,useState } from 'react'
 import { useParams,Link } from 'react-router-dom'
 import { Button, Card,ListGroup } from 'react-bootstrap'
 import { FaRegTrashAlt,FaEdit } from "react-icons/fa";
 import {format} from 'date-fns'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { ContactContext } from '../context/Contact.context';
 
-function ContactDetails({contacts,deleteContact}) {
-    // navigate to which location? 
+function ContactDetails() {
+
+   const {contacts,deleteContact} = useContext(ContactContext) 
+
+
+    // do navigate to which location? 
     const navigate = useNavigate()
-
+    
     const [contact,setContact] = useState({})
+
+    // receiving id from url by useParams() hook(react-router-dom v6)
     const {id} = useParams()
+
+    // finding single contact
     const foundContact = contacts.find(contact => contact.id === id)
 
+    //initial mount if we get id and foundContact then set foundContact in state based on [id]
     useEffect(() => {
         if(id && foundContact){
             setContact(foundContact)
         }
     },[id])
 
-     // call deleteContact function for delete data 
+     // calling deleteContact function for delete data 
     const handleDelete = (id) => {
         toast.success("contact is deleted successfully !", {
             position: "top-right",
@@ -34,7 +44,8 @@ function ContactDetails({contacts,deleteContact}) {
          deleteContact(id)
          navigate('/contacts')
     }
-
+    
+    // destructuring contact data as object
     const {firstName,lastName,email,gender,bio,profession,image,dateOfBirth} = contact
 
   return (

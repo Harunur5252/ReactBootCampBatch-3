@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState,useEffect } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { ContactContext } from '../../context/Contact.context';
 
 // validation rules for all input fields
 const schema = yup.object({
@@ -19,7 +20,8 @@ const schema = yup.object({
    gender: yup.mixed().required('Gender is required').oneOf(['male','female']),
 })
 
-export default function ContactForm({addContact,contact,updateContact}) {
+export default function ContactForm({contact}) {
+   const {addContact,updateContact} = useContext(ContactContext)
 
     // handling input name field , errors, submit form 
     const { register, reset, setValue, formState: { errors,isSubmitting,isSubmitSuccessful }, handleSubmit, watch } = useForm({

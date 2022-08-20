@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import ContactForm from '../components/contacts/ContactForm'
 
-function AddContact({addContact}) {
+function AddContact() {
   return (
-    <ContactForm addContact={addContact} />
+    <ContactForm />
   )
 }
 
