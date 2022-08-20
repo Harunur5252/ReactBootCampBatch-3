@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { ContactContext } from '../../context/Contact.context';
+import FormTextInput from '../../layouts/FormTextInput'
 
 // validation rules for all input fields
 const schema = yup.object({
@@ -80,14 +81,12 @@ export default function ContactForm({contact}) {
        }
        navigate('/contacts')
     }
-
     
     // tracking date 
     const [birthYear,setBirthYear] = useState(new Date())
     useEffect(() =>{
        setValue('dateOfBirth',birthYear)
     },[birthYear])
-
 
     // after form successfully submitting then reset value from input fields
     useEffect(() =>{
@@ -105,69 +104,70 @@ export default function ContactForm({contact}) {
     },[isSubmitSuccessful])
 
 
+    // create input form data array
+    const formTextInputData = [
+      {
+         name:'firstName',
+         register:register,
+         errors:errors,
+         Label:'FirstName',
+         placeholder:'Enter Your FirstName',
+         defaultValue : firstName
+      },
+      {
+         name:'lastName',
+         register:register,
+         errors:errors,
+         Label:'LastName',
+         placeholder:'Enter Your LastName',
+         defaultValue : lastName
+      },
+      {
+         name:'email',
+         register:register,
+         errors:errors,
+         Label:'Email',
+         placeholder:'Enter Your Email Address',
+         defaultValue : email
+      },
+      {
+         name:'image',
+         register:register,
+         errors:errors,
+         Label:'Profile Picture',
+         placeholder:'Enter Your Profile Picture',
+         defaultValue : image
+      },
+      {
+         name:'bio',
+         register:register,
+         errors:errors,
+         Label:'Bio',
+         placeholder:'Enter Your Bio',
+         defaultValue :bio,
+         as : 'textarea'
+      }
+    ]
+
   return (
     <>
         <h2 className='text-center'>{contact?.id ? 'Edit Contact' : 'Add Contact'}</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
-            <Form.Group as={Row} className='mb-3'>
-                <Col sm={3}>
-                   <Form.Label htmlFor='firstName' column>First Name</Form.Label>
-                </Col>
-
-                <Col sm={9}>
-                   <Form.Control 
-                        type='text'  
-                        id='firstName' 
-                        defaultValue={firstName}
-                        {...register("firstName")} 
-                        isInvalid={errors?.firstName}
-                        placeholder='Enter Your First Name' 
-                   />
-                     <Form.Control.Feedback type="invalid">
-                        {errors?.firstName?.message}
-                     </Form.Control.Feedback>
-                </Col>
-            </Form.Group>
-
-             <Form.Group as={Row} className='mb-3'>
-                <Col sm={3}>
-                   <Form.Label htmlFor='lastName' column>Last Name</Form.Label>
-                </Col>
-
-                <Col sm={9}>
-                   <Form.Control 
-                        type='text'  
-                        id='lastName' 
-                        defaultValue={lastName}
-                        {...register("lastName")} 
-                        isInvalid={errors?.lastName}
-                        placeholder='Enter Your Last Name' 
-                   />
-                     <Form.Control.Feedback type="invalid">
-                        {errors?.lastName?.message}
-                     </Form.Control.Feedback>
-                </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} className='mb-3'>
-                <Col sm={3}>
-                   <Form.Label htmlFor='email' column>Email Address</Form.Label>
-                </Col>
-
-                <Col sm={9}>
-                   <Form.Control 
-                        type='email' 
-                        id='email' 
-                        defaultValue={email}
-                        {...register("email")} 
-                        isInvalid={errors?.email}
-                        placeholder='Enter Your Email' 
-                   />
-                     <Form.Control.Feedback type="invalid">
-                        {errors?.email?.message}
-                     </Form.Control.Feedback>
-                </Col>
-            </Form.Group>
+            {formTextInputData.map((inputItem,index) => {
+               const {name,register,defaultValue,errors,Label,placeholder,as} = inputItem
+                return ( 
+                  <FormTextInput 
+                     key={index}
+                     name = {name}
+                     register={register}
+                     errors={errors}
+                     Label={Label}
+                     placeholder={placeholder}
+                     defaultValue = {defaultValue}
+                     as = {as}
+                  />
+               )
+            })}
 
             <Form.Group as={Row} className='mb-3'>
                 <Col sm={3}>
@@ -195,26 +195,6 @@ export default function ContactForm({contact}) {
 
             <Form.Group as={Row} className='mb-3'>
                 <Col sm={3}>
-                   <Form.Label htmlFor='image' column>Profile</Form.Label>
-                </Col>
-
-                <Col sm={9}>
-                   <Form.Control 
-                        type='text' 
-                        id='image' 
-                        defaultValue={image}
-                        {...register("image")} 
-                        isInvalid={errors?.image}
-                        placeholder='Enter Your Profile Picture' 
-                   />
-                     <Form.Control.Feedback type="invalid">
-                        {errors?.image?.message}
-                     </Form.Control.Feedback>
-                </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} className='mb-3'>
-                <Col sm={3}>
                    <Form.Label htmlFor='dateOfBirth' column>Date of Birth</Form.Label>
                 </Col>
 
@@ -227,27 +207,6 @@ export default function ContactForm({contact}) {
                            selected={birthYear} 
                            onChange={(date) => setBirthYear(date)} 
                      />
-                </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} className='mb-3'>
-                <Col sm={3}>
-                   <Form.Label htmlFor='bio' column>Bio</Form.Label>
-                </Col>
-
-                <Col sm={9}>
-                   <Form.Control 
-                        as='textarea'
-                        type='text' 
-                        id='bio' 
-                        defaultValue={bio}
-                        {...register("bio")} 
-                        isInvalid={errors?.bio}
-                        placeholder='Enter Your Bio' 
-                   />
-                     <Form.Control.Feedback type="invalid">
-                        {errors?.bio?.message}
-                     </Form.Control.Feedback>
                 </Col>
             </Form.Group>
 
@@ -280,7 +239,8 @@ export default function ContactForm({contact}) {
                      <Form.Control.Feedback type="invalid" className='d-block'>
                         {errors?.gender?.message}
                      </Form.Control.Feedback>
-            </Form.Group> 
+            </Form.Group>
+
             <Button variant='primary' size='md' type='submit' disabled={isSubmitting ? 'disabled' : ''}>
                 {contact?.id ? 'Update Contact' : 'Add Contact'}
             </Button>
