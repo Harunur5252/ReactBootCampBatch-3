@@ -83,7 +83,7 @@ export default function ContactForm({contact}) {
     }
     
     // tracking date 
-    const [birthYear,setBirthYear] = useState(new Date())
+    const [birthYear,setBirthYear] = useState(dateOfBirth ? dateOfBirth : new Date())
     useEffect(() =>{
        setValue('dateOfBirth',birthYear)
     },[birthYear])
