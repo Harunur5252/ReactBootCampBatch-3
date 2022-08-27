@@ -29,21 +29,19 @@ function App() {
             pauseOnHover
           />
 
-          <BrowserRouter>
-            <Header />
-            <Container style={{width:'800px',margin:'0 auto'}} className='pt-3'>
-               <Routes>
-                  <Route  path='/' index element={<Home />} />
-                  <Route  path='/contacts'            element={<Contacts  />} />
-                  <Route  path='/add-contact'         element={<AddContact   />} />
-                  <Route  path='/edit-contact/:id'    element={<EditContact />} />
-                  <Route  path='/contacts/:id'        element={<ContactDetails />} />
-                  <Route  path='/register'            element={<Register />} />
-                  <Route  path='/login'               element={<Login />} />
-                  <Route  path='*'                    element={<NotFound />} />
-               </Routes>
-            </Container>
-          </BrowserRouter>
+          <Header />
+          <Container style={{width:'800px',margin:'0 auto'}} className='pt-3'>
+              <Routes>
+                <Route  path='/' index element={<Home />} />
+                <Route  path='/contacts'            element={<Contacts  />} />
+                <Route  path='/add-contact'         element={<AddContact   />} />
+                <Route  path='/edit-contact/:id'    element={<EditContact />} />
+                <Route  path='/contacts/:id'        element={<ContactDetails />} />
+                <Route  path='/register'            element={<Register />} />
+                <Route  path='/login'               element={<Login />} />
+                <Route  path='*'                    element={<NotFound />} />
+              </Routes>
+          </Container>
     </>
   )
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import {Form,Row,Col} from 'react-bootstrap'
 
 function FormTextInput({name,type = 'text',register,errors,Label,placeholder,defaultValue,...rest}) {
-
   return (
     <Form.Group as={Row} className='mb-3'>
         <Col sm={3}>
@@ -15,11 +14,11 @@ function FormTextInput({name,type = 'text',register,errors,Label,placeholder,def
                     id={name} 
                     defaultValue={defaultValue}
                     {...register(name)} 
-                    isInvalid={errors?.name}
+                    isInvalid={errors[name]}
                     placeholder={placeholder}
                     {...rest}
             />
-            <Form.Control.Feedback type="invalid">
+            <Form.Control.Feedback type="invalid" className='d-block'>
                 {errors[name]?.message}
             </Form.Control.Feedback>
         </Col>
