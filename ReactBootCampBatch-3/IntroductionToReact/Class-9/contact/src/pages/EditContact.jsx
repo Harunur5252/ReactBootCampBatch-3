@@ -10,7 +10,7 @@ function EditContact() {
   const {id} = useParams()
 
   // finding single contact
-  const foundContact = contacts.find(contact => contact.id === id)
+  const foundContact = contacts.find(contact => contact.id === +id)
 
   return (
      <ContactForm contact = {foundContact} />

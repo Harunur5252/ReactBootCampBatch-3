@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import FormTextInput from '../layouts/FormTextInput';
 import { AuthContext } from '../context/Auth.Context';
+import { Link } from 'react-router-dom';
 
 // validation rules for all input fields
 const schema = yup.object({
@@ -51,6 +52,7 @@ function Login() {
               placeholder='Enter Your Password'
               defaultValue = 'abcdefF1@'
           />
+          <p>Forgot Password : <Link to='/forgot-password'>Click here</Link></p>
           <Button variant='primary' type='submit' disabled={isSubmitting ? 'disabled' : ''}>
              Login
           </Button>

@@ -22,7 +22,7 @@ export default function Header() {
                     <>
                         <Nav.Link as={NavLink} to="/contacts">Contacts</Nav.Link>
                         <Nav.Link as={NavLink} to="/add-contact">AddContact</Nav.Link>
-                        <Nav.Link as={NavLink} to="/dashboard">Dashboard</Nav.Link>
+                        <Nav.Link as={NavLink} to="/dashboard/profile">Dashboard</Nav.Link>
                         <Nav.Link onClick={logout}>Logout</Nav.Link>
                     </>
                 }

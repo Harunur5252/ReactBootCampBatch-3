@@ -14,6 +14,11 @@ import ContactDetails from '../pages/ContactDetails'
 import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
+import Profile from '../pages/Profile'
+import ManagePassword from '../pages/ManagePassword'
+import UserContactList from '../pages/UserContactList'
+import ForgotPassword from '../pages/ForgotPassword'
+import ResetPassword from '../pages/ResetPassword'
 
 
 
@@ -22,7 +27,7 @@ function App() {
     <>
           <ToastContainer
             position="top-right"
-            autoClose={2000}
+            autoClose={1500}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -69,15 +74,22 @@ function App() {
                   } 
                 />
                 <Route  
-                  path='/dashboard'           
+                  path='dashboard'           
                   element={
                     <PrivateRoute>
                        <Dashboard />
                     </PrivateRoute>
                   } 
-                />
+                >
+                   <Route index element={<Profile />} />
+                   <Route path='profile' element={<Profile />} />
+                   <Route path='manage-password' element={<ManagePassword />} />
+                   <Route path='contacts' element={<UserContactList />} />
+                </Route>
+                <Route path='forgot-password' element={<ForgotPassword />} />
+                <Route path='reset-password' element={<ResetPassword />} />
                 <Route  
-                  path='/register'            
+                   path='/register'            
                   element={
                     <PublicRoute>
                       <Register />
@@ -85,14 +97,14 @@ function App() {
                    }
                  />
                 <Route  
-                path='/login'               
+                  path='/login'               
                   element={
                     <PublicRoute>
                        <Login />
                     </PublicRoute>
                   } 
                 />
-                <Route  path='*'                    element={<NotFound />} />
+                <Route  path='*' element={<NotFound />} />
               </Routes>
           </Container>
     </>

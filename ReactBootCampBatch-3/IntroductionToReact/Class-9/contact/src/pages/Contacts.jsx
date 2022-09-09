@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
 import Contact from '../components/contacts/Contact'
+import Loader from '../components/Loader'
 import { ContactContext } from '../context/Contact.context'
 
 export default function Contacts() {
-  const {contacts} = useContext(ContactContext)
+  const {contacts,loader} = useContext(ContactContext)
 
   return (
     <>
         <h2 className='text-center'>All Contacts</h2>
-        {contacts.map(contact => <Contact key={contact.id} contact={contact} />)}
+        {loader ? contacts.map(contact => <Contact key={contact.id} contact={contact} />) : <Loader />}
     </>
   )
 }

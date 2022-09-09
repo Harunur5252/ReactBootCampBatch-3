@@ -38,7 +38,7 @@ export default function ContactForm({contact}) {
       profession : contact?.profession ||'developer',
       image : contact?.image ||'https://randomuser.me/api/portraits/men/78.jpg',
       gender : contact?.gender ||'male',
-      dateOfBirth : contact?.dateOfBirth || new Date()
+      dateOfBirth : contact?.dateOfBirth && new Date(contact?.dateOfBirth) || new Date()
     }
     const {firstName,lastName,email,bio,profession,image,gender,dateOfBirth} = defaultValue
 
@@ -48,37 +48,13 @@ export default function ContactForm({contact}) {
     // submit data and flush message
     const onSubmit = data => {
       const id = contact?.id
-
        if(id){
-         // show flush message 
-         toast.success("contact is updated successfully !", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-         });
-         
          // call updateContact
          updateContact(data,id)
        }else {
-         // show flush message 
-         toast.success("contact is added successfully !", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-         });
-         
          // call addContact
          addContact(data)
        }
-       navigate('/contacts')
     }
     
     // tracking date 

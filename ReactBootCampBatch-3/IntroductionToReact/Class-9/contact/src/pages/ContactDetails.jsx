@@ -6,11 +6,12 @@ import {format} from 'date-fns'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { ContactContext } from '../context/Contact.context';
+import { AuthContext } from '../context/Auth.Context';
 
 function ContactDetails() {
 
    const {contacts,deleteContact} = useContext(ContactContext) 
-
+   const {user} = useContext(AuthContext)
 
     // do navigate to which location? 
     const navigate = useNavigate()
@@ -19,9 +20,8 @@ function ContactDetails() {
 
     // receiving id from url by useParams() hook(react-router-dom v6)
     const {id} = useParams()
-
     // finding single contact
-    const foundContact = contacts.find(contact => contact.id === id)
+    const foundContact = contacts.find(contact => contact.id === +id)
 
     //initial mount if we get id and foundContact then set foundContact in state based on [id]
     useEffect(() => {
@@ -30,19 +30,12 @@ function ContactDetails() {
         }
     },[id])
 
+    // checking details owner
+    const isOwner = user.id === foundContact.author.data.id
+
      // calling deleteContact function for delete data 
     const handleDelete = (id) => {
-        toast.success("contact is deleted successfully !", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-         deleteContact(id)
-         navigate('/contacts')
+        deleteContact(id)
     }
     
     // destructuring contact data as object
@@ -69,17 +62,23 @@ function ContactDetails() {
                 <ListGroup.Item>Date of Birth : {dateOfBirth instanceof Object ? format(dateOfBirth,'dd/MM/yyyy') : dateOfBirth}</ListGroup.Item>
               </ListGroup>
                 <div className='card-btn mt-3'>
-                    <Card.Link as={Link} to={`/edit-contact/${id}`}>
-                       <Button variant="success" size="md">
-                           <FaEdit />
-                       </Button>
-                    </Card.Link>
+                  {
+                    isOwner && 
+                    <>
+                      <Card.Link as={Link} to={`/edit-contact/${+id}`}>
+                        <Button variant="success" size="md">
+                            <FaEdit />
+                        </Button>
+                      </Card.Link>
 
-                    <Card.Link>
-                       <Button variant="danger" size="md" onClick={() => handleDelete(id)}>
-                           <FaRegTrashAlt />
-                      </Button>
-                    </Card.Link>
+                      <Card.Link>
+                        <Button variant="danger" size="md" onClick={() => handleDelete(id)}>
+                            <FaRegTrashAlt />
+                        </Button>
+                      </Card.Link>
+                    </>
+                  }
+                    
                 </div>
               </Card.Body>
           </div>

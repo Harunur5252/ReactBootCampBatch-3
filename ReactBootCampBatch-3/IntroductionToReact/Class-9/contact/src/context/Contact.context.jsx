@@ -1,115 +1,236 @@
-import { createContext,useReducer } from "react";
+import { createContext,useEffect,useReducer, useState } from "react";
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { axiosPrivateInstance } from "../config/axios";
+import { formateContact } from "../utils/formateContact";
 import contactsReducer from "./reducer";
-import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT } from "./type";
+import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT, LOAD_CONTACTS } from "./type";
+import { useContext } from "react";
+import { AuthContext } from "./Auth.Context";
 
 
 // create context
 export const ContactContext = createContext()
 
 // contacts all data
-const initialContacts = [
-    {
-      id: '1',
-      firstName: 'Barbette',
-      lastName: 'Pfertner',
-      email: 'bpfertner0@drupal.org',
-      profession: 'Web Developer',
-      gender: 'female',
-      image: 'https://randomuser.me/api/portraits/women/75.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '2',
-      firstName: 'Ignatius',
-      lastName: 'McPhilip',
-      email: 'imcphilip1@toplist.cz',
-      profession: 'Software Developer',
-      gender: 'male',
-      image: 'https://randomuser.me/api/portraits/men/75.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '3',
-      firstName: 'Fletch',
-      lastName: 'Veel',
-      email: 'fveel2@yellowbook.com',
-      profession: 'Graphic Designer',
-      gender: 'male',
-      image: 'https://randomuser.me/api/portraits/men/78.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '4',
-      firstName: 'Shawn',
-      lastName: 'Lawrenz',
-      email: 'slawrenz3@independent.co.uk',
-      profession: 'Data entry specialist',
-      gender: 'female',
-      image: 'https://randomuser.me/api/portraits/women/80.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '5',
-      firstName: 'Bucky',
-      lastName: 'Casaccio',
-      email: 'bcasaccio4@netlog.com',
-      gender: 'male',
-      profession: 'Data scientist',
-      image: 'https://randomuser.me/api/portraits/men/56.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '6',
-      firstName: 'Regan',
-      lastName: 'Lodford',
-      email: 'rlodford5@nbcnews.com',
-      profession: 'python Developer',
-      gender: 'female',
-      image: 'https://randomuser.me/api/portraits/women/81.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-    {
-      id: '7',
-      firstName: 'Hubert',
-      lastName: 'Langhorne',
-      email: 'hlanghorne6@thetimes.co.uk',
-      gender: 'male',
-      profession: 'CPA Marketer',
-      image: 'https://randomuser.me/api/portraits/men/80.jpg',
-      dateOfBirth: new Date(),
-      bio: 'All About me',
-    },
-  ]
+// const initialContacts = [
+//     {
+//       id: '1',
+//       firstName: 'Barbette',
+//       lastName: 'Barbette',
+//       email: 'bpfertner0@drupal.org',
+//       profession: 'Web Developer',
+//       gender: 'female',
+//       image: 'https://randomuser.me/api/portraits/women/75.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '2',
+//       firstName: 'Ignatius',
+//       lastName: 'McPhilip',
+//       email: 'imcphilip1@toplist.cz',
+//       profession: 'Software Developer',
+//       gender: 'male',
+//       image: 'https://randomuser.me/api/portraits/men/75.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '3',
+//       firstName: 'Fletch',
+//       lastName: 'Veel',
+//       email: 'fveel2@yellowbook.com',
+//       profession: 'Graphic Designer',
+//       gender: 'male',
+//       image: 'https://randomuser.me/api/portraits/men/78.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '4',
+//       firstName: 'Shawn',
+//       lastName: 'Lawrenz',
+//       email: 'slawrenz3@independent.co.uk',
+//       profession: 'Data entry specialist',
+//       gender: 'female',
+//       image: 'https://randomuser.me/api/portraits/women/80.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '5',
+//       firstName: 'Bucky',
+//       lastName: 'Casaccio',
+//       email: 'bcasaccio4@netlog.com',
+//       gender: 'male',
+//       profession: 'Data scientist',
+//       image: 'https://randomuser.me/api/portraits/men/56.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '6',
+//       firstName: 'Regan',
+//       lastName: 'Lodford',
+//       email: 'rlodford5@nbcnews.com',
+//       profession: 'python Developer',
+//       gender: 'female',
+//       image: 'https://randomuser.me/api/portraits/women/81.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+//     {
+//       id: '7',
+//       firstName: 'Hubert',
+//       lastName: 'Langhorne',
+//       email: 'hlanghorne6@thetimes.co.uk',
+//       gender: 'male',
+//       profession: 'CPA Marketer',
+//       image: 'https://randomuser.me/api/portraits/men/80.jpg',
+//       dateOfBirth: new Date(),
+//       bio: 'All About me',
+//     },
+// ]
 
 
 // create provider for data
 export const ContactProvider = ({children}) => {
-    // for tracking contact data
-    const [contacts,dispatch] = useReducer(contactsReducer,initialContacts)
+    // for tracking all contacts data
+    const [contacts,dispatch] = useReducer(contactsReducer,[])
+    const [loader,setLoader] = useState(false)
+    const navigate = useNavigate()
+    const {user} = useContext(AuthContext)
+
+   // initially load all contacts data by calling loadContacts()
+   useEffect(() =>{
+      (async () => {
+        await loadContacts();
+      })()
+   },[])
+
+
+    // load/get all contacts data by request from strapi
+  const loadContacts = async () => {
+    try {
+      const response = await axiosPrivateInstance.get('/contacts?populate=*')
+      const loadedContacts = await response.data.data.map(contact => formateContact(contact));
+      dispatch({type:LOAD_CONTACTS,payload:loadedContacts})
+      setLoader(true)
+    } catch (err) {
+      setLoader(true)
+      toast.error(err.response?.data?.error?.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }); 
+    }
+  }
 
     // delete contact using dispatch
-    const deleteContact = (id) => {
-        dispatch({type:DELETE_CONTACT,payload : id})
+    const deleteContact = async (id) => {
+        try {
+          const response = await axiosPrivateInstance.delete(`/contacts/${id}`) 
+          dispatch({type:DELETE_CONTACT,payload : response.data.data.id})
+          navigate('/contacts')
+          toast.success("contact is deleted successfully !", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }); 
+        } catch (err) {
+          toast.error(err.response?.data?.error?.message, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }); 
+        }
     }
 
    // add contact using dispatch
-   const addContact = (contact) => {
-       dispatch({type:ADD_CONTACT,payload:contact})
-   }   
+   const addContact = async (contact) => {
+    // send request to the server
+    // successful response
+    // then dispatch
+    try {
+        const response = await axiosPrivateInstance.post('/contacts',{
+           data : contact
+       })
+        const contactFromServer = formateContact(response.data.data)
+        dispatch({type : ADD_CONTACT,payload:contactFromServer})
+        toast.success("contact is added successfully !", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate('/contacts')
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }   
 
   // update contact using dispatch
-  const updateContact = (contactToUpdate,id) => {
-     dispatch({type:UPDATE_CONTACT,payload:{contactToUpdate,id}})
+  const updateContact = async(contactToUpdate,id) => {
+    // send request to the server
+    // successful response
+    // then dispatch
+    try {
+      const response = await axiosPrivateInstance.put(`/contacts/${id}?populate=*`,{
+        data : contactToUpdate
+      })
+      const contact = formateContact(response.data.data)
+       dispatch({type:UPDATE_CONTACT,payload:{id:contact.id,contact}})
+       navigate(`/contacts/${id}`)
+       toast.success('contact updated successfully !', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    
   }
-
+  
   // create an object to pass data with provider to any children
   const value = {
+    loader,
     contacts,
     addContact,
     updateContact,
