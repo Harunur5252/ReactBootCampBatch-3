@@ -1,5 +1,5 @@
 import React, { useContext,useState,useEffect } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { ContactContext } from '../../context/Contact.context';
 import FormTextInput from '../../layouts/FormTextInput'
+import NoImage from '../../assets/image-not-found.jpg'
 
 // validation rules for all input fields
 const schema = yup.object({
@@ -16,13 +17,11 @@ const schema = yup.object({
    email: yup.string().required('Email is required').email('Must be valid email'),
    bio: yup.string().required('Bio is required').min(10,'Bio must be 10 or more').max(300,'Bio must be equal or less than 300'),
    profession: yup.string().required('Profession is required').oneOf(['developer','designer','marketer']),
-   image: yup.string().required('Image url is required').url('Image url must be valid'),
    gender: yup.mixed().required('Gender is required').oneOf(['male','female']),
 })
 
 export default function ContactForm({contact}) {
-   const {addContact,updateContact} = useContext(ContactContext)
-
+   const {addContact,updateContact,submit,contacts,updateContactError,submitUpdate,deleteContactImage,submitDelete} = useContext(ContactContext)
     // handling input name field , errors, submit form 
     const { register, reset, setValue, formState: { errors,isSubmitting,isSubmitSuccessful }, handleSubmit, watch } = useForm({
       resolver: yupResolver(schema)
@@ -42,17 +41,12 @@ export default function ContactForm({contact}) {
     }
     const {firstName,lastName,email,bio,profession,image,gender,dateOfBirth} = defaultValue
 
-    // navigate to which location? 
-    const navigate = useNavigate()
-
     // submit data and flush message
     const onSubmit = data => {
       const id = contact?.id
        if(id){
-         // call updateContact
-         updateContact(data,id)
+         updateContact(data,id,contact?.imgId)
        }else {
-         // call addContact
          addContact(data)
        }
     }
@@ -72,7 +66,6 @@ export default function ContactForm({contact}) {
              email : '',
              bio : '',
              profession : '',
-             image : '',
              gender : 'male',
          })
        }
@@ -105,14 +98,7 @@ export default function ContactForm({contact}) {
          placeholder:'Enter Your Email Address',
          defaultValue : email
       },
-      {
-         name:'image',
-         register:register,
-         errors:errors,
-         Label:'Profile Picture',
-         placeholder:'Enter Your Profile Picture',
-         defaultValue : image
-      },
+      
       {
          name:'bio',
          register:register,
@@ -144,6 +130,36 @@ export default function ContactForm({contact}) {
                )
             })}
 
+            <Form.Group as={Row} className='mb-3'>
+                <Col sm={3}>
+                   <Form.Label htmlFor='image' column>Profile Picture</Form.Label>
+                </Col>
+
+                <Col sm={9}>
+                   <Form.Control  
+                   type='file'
+                   accept='image/*'
+                   {...register("image")} 
+                   id='image' 
+                   />
+                </Col>
+                {contact?.imgId && <p style={{color:'red'}}>{updateContactError}</p>}
+            </Form.Group>
+            {
+               contact?.id && 
+                  <Row>
+                     <Col sm={3}>
+                        <img src={contact?.image ? contact?.image : NoImage} width={100} height={100} alt='beforeImg' />
+                        <p>{contact?.image ? 'Before Image' : 'no image'}</p>
+                     </Col>
+                     <Col sm={3}>
+                        <Button variant='danger' disabled={!contact?.imgId} onClick={() => deleteContactImage(contact?.imgId)}>
+                           {submitDelete ? <Spinner animation="border" variant="dark" /> : 'Delete Image'}
+                        </Button>
+                     </Col>
+                  </Row>
+            }
+           
             <Form.Group as={Row} className='mb-3'>
                 <Col sm={3}>
                    <Form.Label htmlFor='profession' column>Profession</Form.Label>
@@ -216,8 +232,8 @@ export default function ContactForm({contact}) {
                      </Form.Control.Feedback>
             </Form.Group>
 
-            <Button variant='primary' size='md' type='submit' disabled={isSubmitting ? 'disabled' : ''}>
-                {contact?.id ? 'Update Contact' : 'Add Contact'}
+            <Button variant='primary' className='mb-3' size='md' type='submit' disabled={submit ? 'disabled' : ''}>
+                {submit || submitUpdate ? <Spinner animation="border" variant="dark" /> : contact?.id  ? 'Update Contact' : 'Add Contact'}
             </Button>
         </Form>
     </>

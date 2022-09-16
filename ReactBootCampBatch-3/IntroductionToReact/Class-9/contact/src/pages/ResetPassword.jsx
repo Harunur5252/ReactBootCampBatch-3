@@ -6,11 +6,12 @@ import { Button, Form } from 'react-bootstrap'
 import FormTextInput from '../layouts/FormTextInput'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { axiosPublicInstance } from '../config/axios';
+import { toast } from 'react-toastify';
 
 // validation rules for all input fields
 const schema = yup.object({
     password: yup.string().required('password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,'Must Contain 6 character,One Uppercase,One Lowercase,One Number and One special case character'),
-    confirmPassword : yup.string().required('confirm password is required').oneOf([yup.ref('password')],'confirm password does"t match')
+    passwordConfirmation : yup.string().required('confirm password is required').oneOf([yup.ref('password')],'confirm password does"t match')
 })
 
 function ResetPassword() {
@@ -27,7 +28,7 @@ function ResetPassword() {
          const response = await axiosPublicInstance.post('/auth/reset-password/',{
          code : code,
          password : data.password,
-         confirmPassword : data.confirmPassword
+         passwordConfirmation : data.passwordConfirmation
         }) 
         toast.success('Password reset successfully, now you can login with updated password', {
           position: "top-right",
@@ -66,7 +67,7 @@ function ResetPassword() {
                 />
                 <FormTextInput 
                     type='password'
-                    name = 'confirmPassword'
+                    name = 'passwordConfirmation'
                     register={register}
                     errors={errors}
                     Label='Confirm Password'

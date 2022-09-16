@@ -82,12 +82,27 @@ function App() {
                   } 
                 >
                    <Route index element={<Profile />} />
-                   <Route path='profile' element={<Profile />} />
+                   <Route path='profile' element={<Profile />}/>
                    <Route path='manage-password' element={<ManagePassword />} />
                    <Route path='contacts' element={<UserContactList />} />
                 </Route>
-                <Route path='forgot-password' element={<ForgotPassword />} />
-                <Route path='reset-password' element={<ResetPassword />} />
+               
+                <Route 
+                  path='forgot-password' 
+                  element={
+                    <PublicRoute>
+                      <ForgotPassword />
+                    </PublicRoute>
+                  } 
+                />
+                <Route 
+                  path='reset-password' 
+                  element={
+                    <PublicRoute>
+                      <ResetPassword />
+                    </PublicRoute>
+                  } 
+                />
                 <Route  
                    path='/register'            
                   element={

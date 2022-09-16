@@ -1,7 +1,7 @@
 import React from 'react'
 import {Form,Row,Col} from 'react-bootstrap'
 
-function FormTextInput({name,type = 'text',register,errors,Label,placeholder,defaultValue,...rest}) {
+function FormTextInput({name, type = 'text',register,errors,Label,placeholder,defaultValue='',...rest}) {
   return (
     <Form.Group as={Row} className='mb-3'>
         <Col sm={3}>

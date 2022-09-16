@@ -3,8 +3,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import contactsReducer from "./reducer";
-import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT, LOAD_CONTACTS } from "./type";
+import contactsReducer from "./contactReducer";
+import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT, LOAD_CONTACTS } from "./contactType";
 import { useContext } from "react";
 import { AuthContext } from "./Auth.Context";
 
@@ -12,109 +12,38 @@ import { AuthContext } from "./Auth.Context";
 // create context
 export const ContactContext = createContext()
 
-// contacts all data
-// const initialContacts = [
-//     {
-//       id: '1',
-//       firstName: 'Barbette',
-//       lastName: 'Barbette',
-//       email: 'bpfertner0@drupal.org',
-//       profession: 'Web Developer',
-//       gender: 'female',
-//       image: 'https://randomuser.me/api/portraits/women/75.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '2',
-//       firstName: 'Ignatius',
-//       lastName: 'McPhilip',
-//       email: 'imcphilip1@toplist.cz',
-//       profession: 'Software Developer',
-//       gender: 'male',
-//       image: 'https://randomuser.me/api/portraits/men/75.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '3',
-//       firstName: 'Fletch',
-//       lastName: 'Veel',
-//       email: 'fveel2@yellowbook.com',
-//       profession: 'Graphic Designer',
-//       gender: 'male',
-//       image: 'https://randomuser.me/api/portraits/men/78.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '4',
-//       firstName: 'Shawn',
-//       lastName: 'Lawrenz',
-//       email: 'slawrenz3@independent.co.uk',
-//       profession: 'Data entry specialist',
-//       gender: 'female',
-//       image: 'https://randomuser.me/api/portraits/women/80.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '5',
-//       firstName: 'Bucky',
-//       lastName: 'Casaccio',
-//       email: 'bcasaccio4@netlog.com',
-//       gender: 'male',
-//       profession: 'Data scientist',
-//       image: 'https://randomuser.me/api/portraits/men/56.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '6',
-//       firstName: 'Regan',
-//       lastName: 'Lodford',
-//       email: 'rlodford5@nbcnews.com',
-//       profession: 'python Developer',
-//       gender: 'female',
-//       image: 'https://randomuser.me/api/portraits/women/81.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-//     {
-//       id: '7',
-//       firstName: 'Hubert',
-//       lastName: 'Langhorne',
-//       email: 'hlanghorne6@thetimes.co.uk',
-//       gender: 'male',
-//       profession: 'CPA Marketer',
-//       image: 'https://randomuser.me/api/portraits/men/80.jpg',
-//       dateOfBirth: new Date(),
-//       bio: 'All About me',
-//     },
-// ]
+// contacts initial data
+const initialContacts = []
 
 
 // create provider for data
 export const ContactProvider = ({children}) => {
     // for tracking all contacts data
-    const [contacts,dispatch] = useReducer(contactsReducer,[])
+    const [contacts,dispatch] = useReducer(contactsReducer,initialContacts)
     const [loader,setLoader] = useState(false)
     const navigate = useNavigate()
-    const {user} = useContext(AuthContext)
+    const [submit,setSubmit]=useState(false)
+    const [submitUpdate,setSubmitUpdate]=useState(false)
+    const [submitDelete,setSubmitDelete]=useState(false)
+    const updateContactError = 'You have already a contact image,please delete before contact image then update'
+    const [deleteSingleContactImg,setDeleteSingleContactImg]=useState(false)
+    const {user,token} = useContext(AuthContext)
 
    // initially load all contacts data by calling loadContacts()
    useEffect(() =>{
       (async () => {
-        await loadContacts();
+        if(user && token){
+          await loadContacts();
+        }
       })()
-   },[])
+   },[user,token,deleteSingleContactImg])
 
 
-    // load/get all contacts data by request from strapi
+    // load/get all contacts data by request from strapi server
   const loadContacts = async () => {
     try {
-      const response = await axiosPrivateInstance.get('/contacts?populate=*')
-      const loadedContacts = await response.data.data.map(contact => formateContact(contact));
+      const response = await axiosPrivateInstance(token).get('/contacts?populate=*')
+      const loadedContacts = response.data.data.map(contact => formateContact(contact));
       dispatch({type:LOAD_CONTACTS,payload:loadedContacts})
       setLoader(true)
     } catch (err) {
@@ -132,9 +61,11 @@ export const ContactProvider = ({children}) => {
   }
 
     // delete contact using dispatch
-    const deleteContact = async (id) => {
+    const deleteContact = async (id,imgId) => {
         try {
-          const response = await axiosPrivateInstance.delete(`/contacts/${id}`) 
+          const response = await axiosPrivateInstance(token).delete(`/contacts/${id}`) 
+          // const deleteResponse = await axiosPrivateInstance(token).delete(`/upload/files/${imgId}`)
+          // console.log(deleteResponse.data)
           dispatch({type:DELETE_CONTACT,payload : response.data.data.id})
           navigate('/contacts')
           toast.success("contact is deleted successfully !", {
@@ -161,15 +92,29 @@ export const ContactProvider = ({children}) => {
 
    // add contact using dispatch
    const addContact = async (contact) => {
-    // send request to the server
-    // successful response
-    // then dispatch
+    const data = {
+      firstName:contact.firstName,
+      lastName:contact.lastName,
+      email:contact.email,
+      bio:contact.bio,
+      profession:contact.profession,
+      dateOfBirth:contact.dateOfBirth,
+      gender:contact.gender,
+      author:user.id
+    }
+    
     try {
-        const response = await axiosPrivateInstance.post('/contacts',{
-           data : contact
-       })
+       if(data && contact.image[0]){
+        setSubmit(true)
+        const formData = new FormData()
+        formData.append('files.image',contact.image[0],contact.image[0].name)
+        formData.append('data',JSON.stringify(data))
+        const response = await axiosPrivateInstance(token).post('/contacts?populate=*',formData)
+        
         const contactFromServer = formateContact(response.data.data)
         dispatch({type : ADD_CONTACT,payload:contactFromServer})
+        setSubmit(false)
+        // setSingleContactImgId(response.data.data.attributes?.image?.data?.id)
         toast.success("contact is added successfully !", {
           position: "top-right",
           autoClose: 2000,
@@ -180,7 +125,20 @@ export const ContactProvider = ({children}) => {
           progress: undefined,
         });
         navigate('/contacts')
+       }
+       if(!contact.image[0]){
+        toast.error('select inputs filed with image', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+       }
     } catch (err) {
+      console.log(err.response)
       toast.error(err.response?.data?.error?.message, {
         position: "top-right",
         autoClose: 2000,
@@ -194,26 +152,49 @@ export const ContactProvider = ({children}) => {
   }   
 
   // update contact using dispatch
-  const updateContact = async(contactToUpdate,id) => {
-    // send request to the server
-    // successful response
-    // then dispatch
+  const updateContact = async(contactToUpdate,id,imgId) => {
+    const data = {
+      firstName:contactToUpdate.firstName,
+      lastName:contactToUpdate.lastName,
+      email:contactToUpdate.email,
+      bio:contactToUpdate.bio,
+      profession:contactToUpdate.profession,
+      dateOfBirth:contactToUpdate.dateOfBirth,
+      gender:contactToUpdate.gender,
+      author:user.id
+    }
     try {
-      const response = await axiosPrivateInstance.put(`/contacts/${id}?populate=*`,{
-        data : contactToUpdate
-      })
-      const contact = formateContact(response.data.data)
-       dispatch({type:UPDATE_CONTACT,payload:{id:contact.id,contact}})
-       navigate(`/contacts/${id}`)
-       toast.success('contact updated successfully !', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      if(data && contactToUpdate.image[0] && !imgId){
+        setSubmitUpdate(true)
+        const formData = new FormData()
+        formData.append('files.image',contactToUpdate.image[0],contactToUpdate.image[0].name)
+        formData.append('data',JSON.stringify(data))
+        const response = await axiosPrivateInstance(token).put(`/contacts/${id}?populate=*`,formData)
+         const contact = formateContact(response.data.data)
+         dispatch({type:UPDATE_CONTACT,payload:{id:contact.id,contact}})
+         navigate(`/contacts/${id}`)
+         setSubmitUpdate(false)
+         toast.success('contact updated successfully with image!', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      if(!contactToUpdate.image[0] && imgId){
+        toast.error('Please delete before image and then update data with image', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } catch (err) {
       toast.error(err.response?.data?.error?.message, {
         position: "top-right",
@@ -227,6 +208,36 @@ export const ContactProvider = ({children}) => {
     }
     
   }
+
+  // delete contact image before update
+  const deleteContactImage = async (id) => {
+    try {
+      setSubmitDelete(true)
+     const deleteResponse = await axiosPrivateInstance(token).delete(`/upload/files/${id}`)
+     setDeleteSingleContactImg(true)
+     setSubmitDelete(false)
+     toast.success('Before contact picture deleted successfully!,now you can upload a new contact picture', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    } catch (err) {
+      console.log(err.response)
+      toast.error(err.response?.data?.error?.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
   
   // create an object to pass data with provider to any children
   const value = {
@@ -235,6 +246,11 @@ export const ContactProvider = ({children}) => {
     addContact,
     updateContact,
     deleteContact,
+    submit,
+    submitUpdate,
+    deleteContactImage,
+    submitDelete,
+    updateContactError
   }
 
     return (

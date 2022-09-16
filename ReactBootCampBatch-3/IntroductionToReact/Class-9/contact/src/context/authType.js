@@ -1,0 +1,5 @@
+export const USER_CONTACTS ='USER_CONTACTS'
+export const USER_CONTACT_DELETE = 'USER_CONTACT_DELETE'
+export const LOGIN ='LOGIN'
+export const REGISTER ='REGISTER'
+export const LOGOUT ='LOGOUT'

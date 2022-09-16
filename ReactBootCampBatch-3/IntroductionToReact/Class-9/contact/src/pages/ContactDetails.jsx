@@ -10,19 +10,15 @@ import { AuthContext } from '../context/Auth.Context';
 
 function ContactDetails() {
 
-   const {contacts,deleteContact} = useContext(ContactContext) 
+   const {contacts,deleteContact,setContactTrigger} = useContext(ContactContext) 
    const {user} = useContext(AuthContext)
-
-    // do navigate to which location? 
-    const navigate = useNavigate()
-    
-    const [contact,setContact] = useState({})
+   const [contact,setContact] = useState({})
 
     // receiving id from url by useParams() hook(react-router-dom v6)
     const {id} = useParams()
     // finding single contact
     const foundContact = contacts.find(contact => contact.id === +id)
-
+    
     //initial mount if we get id and foundContact then set foundContact in state based on [id]
     useEffect(() => {
         if(id && foundContact){
@@ -30,6 +26,7 @@ function ContactDetails() {
         }
     },[id])
 
+   
     // checking details owner
     const isOwner = user.id === foundContact.author.data.id
 

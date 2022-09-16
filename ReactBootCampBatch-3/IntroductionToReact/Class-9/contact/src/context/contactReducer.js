@@ -1,5 +1,5 @@
-import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT, LOAD_CONTACTS } from "./type";
-import { v4 as uuidv4 } from 'uuid';
+import { DELETE_CONTACT,ADD_CONTACT,UPDATE_CONTACT, LOAD_CONTACTS } from "./contactType";
+// import { v4 as uuidv4 } from 'uuid';
 
 const contactsReducer = (state,action) => {
     // state means initialContacts

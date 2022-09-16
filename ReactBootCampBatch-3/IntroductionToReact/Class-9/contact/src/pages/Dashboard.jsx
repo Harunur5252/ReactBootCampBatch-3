@@ -14,10 +14,10 @@ function Dashboard() {
                 Profile
               </ListGroup.Item>
               <ListGroup.Item action as={NavLink} to="manage-password">
-                Password
+                Manage Password
               </ListGroup.Item>
               <ListGroup.Item action as={NavLink} to="contacts">
-                User Contacts
+                User Contacts List
               </ListGroup.Item>
             </ListGroup>
           </Col>
