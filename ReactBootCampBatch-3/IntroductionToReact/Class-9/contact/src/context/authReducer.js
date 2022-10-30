@@ -6,7 +6,7 @@ export const authReducer = (state,action) => {
 
   switch (type) {
     case USER_CONTACTS:
-        return [...payload]
+        return [payload]
 
     case USER_CONTACT_DELETE:
         const updatedContacts = state.filter(userContact => userContact.id !== payload)

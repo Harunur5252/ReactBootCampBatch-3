@@ -13,12 +13,12 @@ export default function Contact({contact}) {
   const {user} = useContext(AuthContext)
 
   // call deleteContact function for delete data
-  const handleDelete = (id) => {
-     deleteContact(id)
+  const handleDelete = (id,imgId) => {
+     deleteContact(id,imgId)
   }
   
   // check owner of the contact
-  const isOwner = user.id === contact.author.data.id
+  const isOwner = user.id === contact?.author?.data?.id
  
   
   return (

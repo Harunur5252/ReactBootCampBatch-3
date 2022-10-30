@@ -1,6 +1,7 @@
 import { createContext,useState,useEffect,useReducer } from "react";
 import { axiosPublicInstance } from "../config/axios";
 import { toast } from 'react-toastify';
+import qs from 'qs'
 import { useNavigate,useLocation } from 'react-router-dom';
 import {axiosPrivateInstance} from '../config/axios'
 import { authReducer } from "./authReducer";
@@ -20,6 +21,7 @@ export const AuthProvider = ({children}) => {
     const [user,setUser] = useState(loadedUser ? loadedUser : null)
     const [token,setToken] = useState(loadedToken ? loadedToken : null)
     const [loaded,setLoaded] = useState(false)
+    const [checkDeleteUserContact,setCheckDeleteUserContact] = useState(false)
     const [userContactsLoaded,setUserContactsLoaded] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
@@ -34,8 +36,16 @@ export const AuthProvider = ({children}) => {
 
     // login user all contacts show as list wise
     const loadedUserContact = async () => {
+        const query = qs.stringify({
+            populate : [
+                'contacts',
+                'contacts.image'
+            ]
+        },{
+            encodeValuesOnly:true
+        })
         try {
-            const response = await axiosPrivateInstance(token).get('/users/me?populate=*')
+            const response = await axiosPrivateInstance(token).get(`/users/me?${query}`)
             dispatch({type : USER_CONTACTS,payload : response.data.contacts})
             setLoaded(true)
             setUserContactsLoaded(true)
@@ -54,10 +64,12 @@ export const AuthProvider = ({children}) => {
     }
 
     // user contact delete
-    const userContactDelete = async (id) => {
+    const userContactDelete = async (id,imgId) => {
         try {
+          const deleteResponse = await axiosPrivateInstance(token).delete(`/upload/files/${imgId}`)
           const response = await axiosPrivateInstance(token).delete(`/contacts/${id}`) 
           dispatch({type:USER_CONTACT_DELETE,payload : response.data.data.id})
+          setCheckDeleteUserContact(true)
           toast.success("user contact is deleted successfully !", {
             position: "top-right",
             autoClose: 2000,
@@ -167,7 +179,8 @@ export const AuthProvider = ({children}) => {
         loaded,
         userContactDelete,
         userContactsLoaded,
-        loadedUserContact
+        loadedUserContact,
+        checkDeleteUserContact
     }
 
     return (

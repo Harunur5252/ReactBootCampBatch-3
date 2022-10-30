@@ -9,40 +9,39 @@ import { ContactContext } from '../context/Contact.context';
 import { AuthContext } from '../context/Auth.Context';
 
 function ContactDetails() {
-
-   const {contacts,deleteContact,setContactTrigger} = useContext(ContactContext) 
-   const {user} = useContext(AuthContext)
-   const [contact,setContact] = useState({})
+  const {contacts,deleteContact} = useContext(ContactContext) 
+  const {user} = useContext(AuthContext)
+  const [contact,setContact] = useState({})
 
     // receiving id from url by useParams() hook(react-router-dom v6)
     const {id} = useParams()
     // finding single contact
     const foundContact = contacts.find(contact => contact.id === +id)
+
+    // checking details owner
+    const isOwner = user.id === foundContact?.author?.data?.id
     
-    //initial mount if we get id and foundContact then set foundContact in state based on [id]
+    //initial mount if we get id and foundContact then set foundContact in state based on [id,foundContact]
     useEffect(() => {
         if(id && foundContact){
+          // console.log(foundContact)
             setContact(foundContact)
         }
-    },[id])
+    },[id,foundContact])
 
    
-    // checking details owner
-    const isOwner = user.id === foundContact.author.data.id
-
      // calling deleteContact function for delete data 
     const handleDelete = (id) => {
         deleteContact(id)
     }
     
-    // destructuring contact data as object
     const {firstName,lastName,email,gender,bio,profession,image,dateOfBirth} = contact
 
   return (
     <>
         <h3 className='text-center'>Contacts Details Page</h3>
         {
-        Object.keys(contact).length === 0 ? <p>No contact show</p> 
+        Object.keys(contact).length === 0 ? <p style={{color:'red',fontSize:'2rem',textAlign:'center',marginTop:'10rem'}}>No contact show</p> 
         : 
         <Card className='mb-3'>
           <div className='d-flex'>

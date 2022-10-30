@@ -1,7 +1,6 @@
 import React, { useContext,useEffect } from 'react'
 import Contact from '../components/contacts/Contact'
 import Loader from '../components/Loader'
-import { AuthContext } from '../context/Auth.Context'
 import { ContactContext } from '../context/Contact.context'
 
 export default function Contacts() {

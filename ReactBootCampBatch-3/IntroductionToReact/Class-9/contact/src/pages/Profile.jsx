@@ -11,7 +11,7 @@ import NoImage from '../assets/image-not-found.jpg'
 
 function Profile() {
   const {user,token} = useContext(AuthContext)
-  const [file,setFile] = useState(null)
+  
   const [updateFile,setUpdateFile] = useState(null)
   const [percentage,setPercentage] = useState(0)
   const updateErrorProfile = 'You have already a profile picture,please delete before profile picture then update'

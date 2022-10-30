@@ -27,7 +27,7 @@ export const ContactProvider = ({children}) => {
     const [submitDelete,setSubmitDelete]=useState(false)
     const updateContactError = 'You have already a contact image,please delete before contact image then update'
     const [deleteSingleContactImg,setDeleteSingleContactImg]=useState(false)
-    const {user,token} = useContext(AuthContext)
+    const {user,token,checkDeleteUserContact} = useContext(AuthContext)
 
    // initially load all contacts data by calling loadContacts()
    useEffect(() =>{
@@ -36,7 +36,7 @@ export const ContactProvider = ({children}) => {
           await loadContacts();
         }
       })()
-   },[user,token,deleteSingleContactImg])
+   },[user,token,deleteSingleContactImg,checkDeleteUserContact])
 
 
     // load/get all contacts data by request from strapi server
@@ -63,9 +63,8 @@ export const ContactProvider = ({children}) => {
     // delete contact using dispatch
     const deleteContact = async (id,imgId) => {
         try {
+          const deleteResponse = await axiosPrivateInstance(token).delete(`/upload/files/${imgId}`)
           const response = await axiosPrivateInstance(token).delete(`/contacts/${id}`) 
-          // const deleteResponse = await axiosPrivateInstance(token).delete(`/upload/files/${imgId}`)
-          // console.log(deleteResponse.data)
           dispatch({type:DELETE_CONTACT,payload : response.data.data.id})
           navigate('/contacts')
           toast.success("contact is deleted successfully !", {
@@ -164,6 +163,25 @@ export const ContactProvider = ({children}) => {
       author:user.id
     }
     try {
+      if(data && !contactToUpdate.image[0] && imgId){
+        setSubmitUpdate(true)
+        const response = await axiosPrivateInstance(token).put(`/contacts/${id}?populate=*`,{
+          data : data
+        })
+        const contact = formateContact(response.data.data)
+        dispatch({type:UPDATE_CONTACT,payload:{id:contact.id,contact}})
+        navigate(`/contacts/${id}`)
+        setSubmitUpdate(false)
+        toast.success('contact updated successfully', {
+         position: "top-right",
+         autoClose: 2000,
+         hideProgressBar: false,
+         closeOnClick: true,
+         pauseOnHover: true,
+         draggable: true,
+         progress: undefined,
+       });
+      }
       if(data && contactToUpdate.image[0] && !imgId){
         setSubmitUpdate(true)
         const formData = new FormData()
@@ -184,7 +202,7 @@ export const ContactProvider = ({children}) => {
           progress: undefined,
         });
       }
-      if(!contactToUpdate.image[0] && imgId){
+      if(contactToUpdate.image[0] && imgId){
         toast.error('Please delete before image and then update data with image', {
           position: "top-right",
           autoClose: 2000,
@@ -250,6 +268,7 @@ export const ContactProvider = ({children}) => {
     submitUpdate,
     deleteContactImage,
     submitDelete,
+    loadContacts,
     updateContactError
   }
 

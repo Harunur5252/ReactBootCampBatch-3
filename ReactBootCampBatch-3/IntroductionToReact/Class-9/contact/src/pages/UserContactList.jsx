@@ -34,23 +34,23 @@ function UserContactList() {
           </tr>
         </thead>
         <tbody>
-         {userContacts.map((userContact) => {
+         {userContacts && userContacts.map((userContact) => {
            return(
-              <tr key={userContact.id}>
-                <td>{userContact.id}</td>
-                <td>{userContact.firstName}</td>
-                <td>{userContact.lastName}</td>
-                <td>{userContact.email}</td>
-                <td>{userContact.bio}</td>
-                <td>{userContact.profession}</td>
-                <td><img  src={userContact.image} alt='userContactImage' height={100} width={100} /></td>
+              <tr key={userContact?.id}>
+                <td>{userContact?.id}</td>
+                <td>{userContact?.firstName}</td>
+                <td>{userContact?.lastName}</td>
+                <td>{userContact?.email}</td>
+                <td>{userContact?.bio}</td>
+                <td>{userContact?.profession}</td>
+                <td><img  src={userContact?.image?.url} alt='userContactImage' height={100} width={100} /></td>
                 <td>
-                  <Button variant="danger" size="md" onClick={() => userContactDelete(userContact.id)}>
+                  <Button variant="danger" size="md" onClick={() => userContactDelete(userContact?.id,userContact?.image?.id)}>
                      <FaRegTrashAlt />
                   </Button>
                 </td>
                 <td>
-                  <Button variant="success" size="md" as={Link} to={`/edit-contact/${userContact.id}`}>
+                  <Button variant="success" size="md" as={Link} to={`/edit-contact/${userContact?.id}`}>
                      <FaEdit />
                   </Button>
                 </td>

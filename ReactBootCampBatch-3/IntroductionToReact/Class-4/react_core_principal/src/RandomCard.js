@@ -1,6 +1,8 @@
+import { memo } from 'react';
 import myStyles from './App.module.css'
 
 function RandomCard({cardValues,setPickedValue}){
+  console.log('RandomCard called')
     return (
       <>
         {
@@ -16,4 +18,4 @@ function RandomCard({cardValues,setPickedValue}){
     );
 }
 
-export default RandomCard
+export default memo(RandomCard)
